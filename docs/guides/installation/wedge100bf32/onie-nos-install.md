@@ -19,17 +19,17 @@ There are 3 major steps:
 
 * DHCP server that serves IP addresses to
     * the [BMC](https://en.wikipedia.org/wiki/Baseboard_Management_Controller)
-    * and the Main Board CPU (or MBC): Where the Network Operating System will be effectively installed
+    * the management port of the switch on which the Network Operating System will be effectively installed.
 
 !!! note
-    If you can access the BMC through the Wedge 100BF-32 serial console, the DHCP server and Internet connectivity are optional. However, the installation process requires at least IP connectivity and that you can get SSH access to Main Board CPU. Connectivity to MBC will have to be enabled from BMC.
+    If you can access the BMC through the Wedge 100BF-32 serial console, the DHCP server and Internet connectivity are optional. However, the installation process requires at least IP connectivity and that you can get SSH access to the switch's control processor. Connectivity to the switch will have to be enabled from BMC.
 
 * Wedge 100BF-32 BMC access either
     * via serial console port
     * or via BMC SSH
 
 !!! note
-    Please refer to [EdgeCore](https://www.edge-core.com/) documentation regarding BMC and MBC access procedure.
+    Please refer to [EdgeCore](https://www.edge-core.com/) documentation regarding BMC and switch access procedure.
 
 # Boot into ONIE environment
 
@@ -41,12 +41,12 @@ Last login: Sun Mar  8 07:18:41 2020 from 172.16.11.11
 root@bmc:~#
 ```
 (use your favorite search engine in order to retrieve BMC default password)
-* Power cycle MBC
+* Power cycle the switch
 ```
 wedge_power.sh reset
 ```
 
-* Access the MBC from BMC
+* Access the switch from BMC
 ```
 root@bmc:~# sol.sh
 You are in SOL session.
@@ -63,26 +63,26 @@ Use ctrl-x to quit.
 * Choose **`ONIE rescue mode`** from Grub menu
 
 # RARE/freeRtr NOS image installation via ONIE
-Now that you have rebooted MBC into **`ONIE rescue mode`**, there are 2 possible ways to install RARE/freeRtrt NOS:
+Now that you have rebooted the switch into **`ONIE rescue mode`**, there are 2 possible ways to install RARE/freeRtrt NOS:
 
-* Internet access is available from MBC
+* Internet access is available from the switch via its management port
     * Launch RARE/freeRtr ONIE net-install
 ```
 root@bmc:~# onie-nos-install http://hydra.nix.net.switch.ch/RARE/releases/1/onie-installer.bin
 ```
 
-* WEDGE MBC air gapped installation
+* Wedge air gapped installation
     * From a computer that has Internet connectivity
 ```
 wget http://hydra.nix.net.switch.ch/RARE/releases/1/onie-installer.bin
 ```
-    * Copy RARE/freeRtr ONIE installer to MBC
+    * Copy RARE/freeRtr ONIE installer to the switch
 ```
-scp ./onie-installer.bin root@<mbc_ip>:~/
+scp ./onie-installer.bin root@<mgmt_ip>:~/
 ```
     * Log into the P4 switch either using BMC serial or SSH
 ```
-ssh root@<mbc_ip>
+ssh root@<mgmt_ip>
 ```
     * Launch RARE/freeRtr ONIE install from local file system
 ```
